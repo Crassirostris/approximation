@@ -1,0 +1,480 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+%\usepackage{pscyr}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{expdlist}
+\usepackage[dvips]{graphicx}
+\usepackage{amsmath}
+\usepackage[makeroom]{cancel}
+\usepackage{svg}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{indentfirst}
+
+\begin{document}
+
+\begin{center}
+	{Вяцков Михаил, КН-401}
+	
+	{\huge \bf Лабораторная работа №2}
+\end{center}
+
+\section{Условия}
+
+$$ Ax = b $$
+$$ A = \left(\begin{matrix}
+	1.2345 & 3.1415 & 1 \\
+	2.3456 & 5.9690 & 0 \\
+	3.4567 & 2.1828 & 2.3 \\
+\end{matrix}\right) $$
+$$ b = \left(\begin{matrix}
+	7.6475 \\
+	14.2836 \\
+	8.1213 \\
+\end{matrix}\right) $$
+
+\section{Решение систем с треугольными матрицами}
+
+Если у нас дана треугольная матрица $A$ размера $n \times n$ (например верхнетреугольная), то мы можем легко найти решение системы
+
+$$ Ax = b $$
+
+Заметим, что при этом
+
+$$ b_n = a_{nn} x_n \implies x_n = \frac{b_n}{a_{nn}} $$
+$$ b_{n - 1} = a_{n-1 n-1} x_{n - 1} + a_{n-1 n} x_{n} \implies x_{n - 1}
+	= \frac{b_n - a_{n-1 n} x_n}{a_{n-1 n-1}} $$
+$$ \vdots $$
+$$ x_i = \frac{b_i - \sum_{j = 1}^{i - 1} a_{ij} x_j}{a_{ii}} $$
+
+\section{LU-разложение}
+
+Напомним, что $LU$-разложением матрицы $A$ называется представление ее в виде произведения нижнетреугольной и верхнетреугольной унидиагональной матриц. Формулы для вычисления:
+
+$$ i \ge j \implies a_{ij} = \sum_{k = 1}^{j - 1} l_{ik} u{kj} + l_{ij}
+	\implies l_{ij} = a_{ij} - \sum_{k = 1}^{j - 1} l_{ik} u{kj} $$
+	
+$$ i < j \implies a_{ij} = \sum_{k = 1}^{i - 1} l_{ik} u{kj} + l_{ii} u_{ij}
+	\implies u_{ij} = \frac{1}{l_{ii}} \left( a_{ij} - \sum_{k = 1}^{i - 1} l_{ik} u{kj} \right) $$
+	
+Для того, чтобы решить с помощью $LU$ разложения систему линейных уравнений, надо заметить следующее.
+
+$$ Ax = b \equiv LUx = b \equiv Ly = b $$
+
+Это соотношение можно легко решить, за счет того, что $L$~--- треугольная. Теперь
+
+$$ Ux = y $$
+
+Это соотношение снова можно легко решить, воспользовавшись тем, что $U$~--- тоже треугольная. Таким образом получается ответ на исходную задачу.
+	
+\subsection{Точность 2 знака}
+
+$$ A = \left(\begin{matrix}
+	1.23 & 3.14 & 1.00 \\
+	2.35 & 5.97 & 0.00 \\
+	3.46 & 2.18 & 2.30 \\
+\end{matrix}\right) $$
+
+$$ b = \left(\begin{matrix}
+	7.65 \\
+	14.28 \\
+	8.12 \\
+\end{matrix}\right) $$
+$$ L = \left(\begin{matrix}
+	1.23 & 0.00 & 0.00 \\
+	2.35 & -0.01 & 0.00 \\
+	3.46 & -6.63 & 1252.57 \\
+\end{matrix}\right) $$
+$$ R = \left(\begin{matrix}
+	1.00 & 2.55 & 0.81 \\
+	0.00 & 1.00 & 189.00 \\
+	0.00 & 0.00 & 1.00 \\
+\end{matrix}\right) $$
+
+$$ y = \left(\begin{matrix}
+	6.22 \\
+	33.00 \\
+	0.16 \\
+\end{matrix}\right) $$
+
+$$ x = \left(\begin{matrix}
+	-0.93 \\
+	2.76 \\
+	0.16 \\
+\end{matrix}\right) $$
+
+\subsection{Точность 4 знака}
+
+$$ A = \left(\begin{matrix}
+	1.2345 & 3.1415 & 1 \\
+	2.3456 & 5.9690 & 0 \\
+	3.4567 & 2.1828 & 2.3 \\
+\end{matrix}\right) $$
+
+$$ b = \left(\begin{matrix}
+	7.6475 \\
+	14.2836 \\
+	8.1213 \\
+\end{matrix}\right) $$
+$$ L = \left(\begin{matrix}
+	1.2345 & 0.0000 & 0.0000 \\
+	2.3456 & 0.0000 & 0.0000 \\
+	3.4567 & -6.6137 & 214747.8650 \\
+\end{matrix}\right) $$
+$$ R = \left(\begin{matrix}
+	1.0000 & 2.5448 & 0.8100 \\
+	0.0000 & 1.0000 & -214748.3648 \\
+	0.0000 & 0.0000 & 1.0000 \\
+\end{matrix}\right) $$
+
+$$ y = \left(\begin{matrix}
+	6.1948 \\
+	-214748.3648 \\
+	0.9999 \\
+\end{matrix}\right) $$
+
+$$ x = \left(\begin{matrix}
+	60.0337 \\
+	-21.4748 \\
+	0.9999 \\
+\end{matrix}\right) $$
+
+\subsection{Точность 6 знаков}
+
+$$ A = \left(\begin{matrix}
+	1.2345 & 3.1415 & 1 \\
+	2.3456 & 5.9690 & 0 \\
+	3.4567 & 2.1828 & 2.3 \\
+\end{matrix}\right) $$
+
+$$ b = \left(\begin{matrix}
+	7.6475 \\
+	14.2836 \\
+	8.1213 \\
+\end{matrix}\right) $$
+$$ L = \left(\begin{matrix}
+	1.234500 & 0.000000 & 0.000000 \\
+	2.345600 & 0.000023 & 0.000000 \\
+	3.456700 & -6.613654 & 2146.983566 \\
+\end{matrix}\right) $$
+$$ R = \left(\begin{matrix}
+	1.000000 & 2.544755 & 0.810045 \\
+	0.000000 & 1.000000 & -2147.483648 \\
+	0.000000 & 0.000000 & 1.000000 \\
+\end{matrix}\right) $$
+
+$$ y = \left(\begin{matrix}
+	6.194816 \\
+	-2147.483648 \\
+	0.994042 \\
+\end{matrix}\right) $$
+
+$$ x = \left(\begin{matrix}
+	37.948991 \\
+	-12.794708 \\
+	0.994042 \\
+\end{matrix}\right) $$
+
+\section{Метод Гаусса с выбором главного элемента}
+
+Метод заключается в том, чтобы с помощью элементарных матричных преобразований привести матрицу с треугольному виду. При этом на каждом этапе осуществляется обмен столбцов (или строк, как в данном случае), чтобы получить на диагонали максимальные по модулю элементы.
+
+При выборе главного элемента по строке, мы делаем 2 типа элементных операций. Первая из них~--- прибавление одной строки к другой с коэффицентом. При этом в векторе значений происходит то же самое, вектор ответа не меняется
+
+$$ \left(\begin{matrix}
+	a_{11} & a_{12} & \dots & a_{1n} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{i1} & a_{i2} & \dots & a_{in} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{j1} & a_{j2} & \dots & a_{jn} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{n1} & a_{n2} & \dots & a_{nn} \\
+\end{matrix}\right) x =
+\left(\begin{matrix}
+	b_1 \\
+	\vdots \\
+	b_i \\
+	\vdots \\
+	b_j \\
+	\vdots \\
+	b_n \\
+\end{matrix}\right) $$
+$$ \left(\begin{matrix}
+	a_{11} & a_{12} & \dots & a_{1n} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{i1} & a_{i2} & \dots & a_{in} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{j1} + \lambda a_{i1} & a_{j2} + \lambda a_{i2} & \dots & a_{jn} + \lambda a_{in} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	a_{n1} & a_{n2} & \dots & a_{nn} \\
+\end{matrix}\right) x = 
+\left(\begin{matrix}
+	b_1 \\
+	\vdots \\
+	b_i \\
+	\vdots \\
+	b_j + \lambda b_i \\
+	\vdots \\
+	b_n \\
+\end{matrix}\right) $$
+
+Вторая операция~--- перестановка столбцов, в этом случае переставляют соответсвующие компоненты вектора ответов. Это всего лишь способ по-другому записать матрицу, не более.
+
+$$ (a_1 \dots a_i \dots a_j \dots a_n)
+\left(\begin{matrix}
+	x_1 \\
+	\vdots \\
+	x_i \\
+	\vdots \\
+	x_j \\
+	\vdots \\
+	x_n \\
+\end{matrix}\right) = b \iff
+(a_1 \dots a_j \dots a_i \dots a_n)
+\left(\begin{matrix}
+	x_1 \\
+	\vdots \\
+	x_j \\
+	\vdots \\
+	x_i \\
+	\vdots \\
+	x_n \\
+\end{matrix}\right) = b $$
+
+После того, как получена треугольная матрица, легко ее решить и переставить компоненты вектора на исходные места, чтобы получить ответ.
+
+\subsection{Точность 2 знака}
+
+Матричные преобразования исложены ниже, либо прибавление одной строки к другой, либо обмен двух столбцов.
+
+$$ \left(\begin{matrix}
+1.23 & 3.14 & 1.00 \\
+2.35 & 5.97 & 0.00 \\
+3.46 & 2.18 & 2.30 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_1 \\
+x_2 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+14.28 \\
+8.12 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.14 & 1.23 & 1.00 \\
+5.97 & 2.35 & 0.00 \\
+2.18 & 3.46 & 2.30 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+14.28 \\
+8.12 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.14 & 1.23 & 1.00 \\
+0.00 & 0.01 & -1.89 \\
+2.18 & 3.46 & 2.30 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+-0.25 \\
+8.12 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.14 & 1.23 & 1.00 \\
+0.00 & 0.01 & -1.89 \\
+0.01 & 2.61 & 1.61 \\
+\end{matrix}\right)
+\left(\begin
+{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+-0.25 \\
+2.84 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.14 & 1.00 & 1.23 \\
+0.00 & -1.89 & 0.01 \\
+0.01 & 1.61 & 2.61 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_3 \\
+x_1 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+-0.25 \\
+2.84 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.14 & 1.00 & 1.23 \\
+0.00 & -1.89 & 0.01 \\
+0.01 & 0.02 & 2.61 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_3 \\
+x_1 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.65 \\
+-0.25 \\
+2.63 \\
+\end{matrix}\right) $$
+
+Решив треугольную систему, получаем
+
+$$ x = \left( \begin{matrix}
+	1.01 \\
+	2.00 \\
+	0.13 \\
+\end{matrix} \right) $$
+
+\subsection{Точность 4 знака}
+
+$$ \left(\begin{matrix}
+1.2345 & 3.1415 & 1.0000 \\
+2.3456 & 5.9690 & 0.0000 \\
+3.4567 & 2.1828 & 2.3000 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_1 \\
+x_2 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+14.2836 \\
+8.1213 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.1415 & 1.2345 & 1.0000 \\
+5.9690 & 2.3456 & 0.0000 \\
+2.1828 & 3.4567 & 2.3000 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+14.2836 \\
+8.1213 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.1415 & 1.2345 & 1.0000 \\
+0.0001 & 0.0000 & -1.8999 \\
+2.1828 & 3.4567 & 2.3000 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+-0.2466 \\
+8.1213 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.1415 & 1.2345 & 1.0000 \\
+0.0001 & 0.0000 & -1.8999 \\
+0.0001 & 2.5990 & 1.6052 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_1 \\
+x_3 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+-0.2466 \\
+2.8078 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.1415 & 1.0000 & 1.2345 \\
+0.0001 & -1.8999 & 0.0000 \\
+0.0001 & 1.6052 & 2.5990 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_3 \\
+x_1 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+-0.2466 \\
+2.8078 \\
+\end{matrix}\right) $$
+
+$$ \left(\begin{matrix}
+3.1415 & 1.0000 & 1.2345 \\
+0.0001 & -1.8999 & 0.0000 \\
+0.0001 & 0.0002 & 2.5990 \\
+\end{matrix}\right)
+\left(\begin{matrix}
+x_2 \\
+x_3 \\
+x_1 \\
+\end{matrix}\right)
+=
+\left(\begin{matrix}
+7.6475 \\
+-0.2466 \\
+2.5995 \\
+\end{matrix}\right) $$
+
+Отсюда привычным решением треугольной системы получаем
+
+$$ x = \left(\begin{matrix}
+	1.0002 \\
+	2.0000 \\
+	0.1297 \\
+\end{matrix}\right) $$
+
+\section{Анализ результатов}
+
+Метод с выбором главного элемента дает более точный результат, потому что второй уголовой минор очень близок к нулю, поэтому при $LU$-разложении в центре матрицы возникает очень маленькое число, которое очень сильно меняется из-за точности и поэтому очень сильно влияет на ответ при решениях систем уравнений с треугольными матрицами.
+
+Выбор главного элемента по строке не является самым точным методом, выбор главного элемента по всей матрицы дает меньшее отклонение, но даже этого метода хватило, чтобы дать очень похожий ответ. Если убрать ограничения на точность, то можно найти, что ответом является вектор $(1, 2, 0.13)$. Решения через $LU$ разложение очень мало напоминают такой ответ.
+
+\end{document}
