@@ -1,0 +1,114 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+%\usepackage{pscyr}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{expdlist}
+\usepackage[dvips]{graphicx}
+\usepackage{amsmath}
+\usepackage[makeroom]{cancel}
+\usepackage{svg}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{indentfirst}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\begin{document}
+	
+\newtheorem{problem}{Задача}
+
+\begin{center}
+	{Вяцков Михаил, КН-401}
+	
+	{\huge \bf Контрольная работа. Вариант №3 }
+\end{center}
+
+\begin{problem}
+Сделать один шаг метода Ньютона для системы
+
+$$ \left\{\begin{matrix}
+	-\sin x + \sin y + 0.01 & = & 0 \\
+	\tg x + \tg y + 0.01 & = & 0 \\
+\end{matrix}\right. $$
+	
+При условии, что $\mathbf{x_0} = (0, 0)^T$	
+\end{problem}
+
+Перепишем функцию в векторной форме и найдем производную
+
+$$ f(\mathbf{x}) = (0.01 - \sin x + \sin y, 0.01 + \tg x + \tg y) $$
+$$ f'(\mathbf{x}) = \left(\begin{matrix}
+	- \cos x & \cos y \\
+	\sec^2 x & \sec^2 y \\
+\end{matrix}\right) $$
+$$ \varDelta_0 \mathbf{x} = \mathbf{x}_1 - \mathbf{x}_0 = \mathbf{x}_1 $$
+$$ f'(\mathbf{x}_0) \mathbf{x}_1 = f(\mathbf{x}_0) $$
+$$ \left(\begin{matrix}
+	 -1 & 1 \\
+	 1 & 1 \\
+\end{matrix}\right) \mathbf{x}_1 =
+\left(\begin{matrix}
+	0.01 \\
+	0.01 \\
+\end{matrix}\right) $$
+$$ \left(\begin{matrix}
+	-1 & 1 \\
+	0 & 2 \\
+\end{matrix}\right) \mathbf{x}_1 =
+\left(\begin{matrix}
+	0.01 \\
+	0.02 \\
+\end{matrix}\right) $$
+$$ \mathbf{x}_1 = (0, 0.01) $$
+
+\begin{problem}
+	content...
+\end{problem}
+
+\begin{problem}
+Проверить достаточные условия локальной сходимости метода простой итерации для системы
+	
+$$
+\left\{\begin{matrix}
+	x & = & x^2 + y^2 \\
+	y & = & \tg x + \tg y \\
+\end{matrix} \right.
+$$
+\end{problem}
+
+Выразим это в векторной форме
+
+$$ \mathbf{x} = \Phi(\mathbf{x}) = (x^2 + y^2, \tg x + \tg y) $$
+$$ \Phi'(\mathbf{x}) = \left(\begin{matrix}
+	2x & 2y \\
+	\sec^2 x & \sec^2 y \\
+\end{matrix}\right) $$
+
+Найдем норму производной $\Phi(\mathbf{x})$.
+
+$$ \norm{\Phi'(\mathbf{x})} = \sqrt{\lambda_{max}(\Phi'(\mathbf{x}) \Phi'(\mathbf{x})^T)} $$
+
+Где $\lambda_{max}$~--- наибольшее собственное число.
+
+$$ \Phi'(\mathbf{x}) \Phi'(\mathbf{x})^T) = \left( \begin{matrix}
+	4 x^4 + 4 y^4 & 2x \sec^2 x + 2y \sec^2 y \\
+	2x \sec^2 x + 2y \sec^2 y & sec^4 x + sec^4 y \\
+\end{matrix} \right) $$
+$$ \chi(\lambda) = \left| \begin{matrix}
+	4 x^4 + 4 y^4 - \lambda & 2x \sec^2 x + 2y \sec^2 y \\
+	2x \sec^2 x + 2y \sec^2 y & sec^4 x + sec^4 y - \lambda \\
+\end{matrix} \right| = 0 $$
+$$ (4 x^4 + 4 y^4 - \lambda) (sec^4 x + sec^4 y - \lambda) - (2x \sec^2 x + 2y \sec^2 y) (2x \sec^2 x + 2y \sec^2 y) = 0 $$
+$$ \lambda^2 - (4 x^4 + 4 y^4 + sec^4 x + sec^4 y) \lambda + (4 x^4 + 4 y^4) (sec^4 x + sec^4 y) - (2x \sec^2 x + 2y \sec^2 y) (2x \sec^2 x + 2y \sec^2 y) = 0 $$
+$$ \lambda = \frac{4 x^4 + 4 y^4 + sec^4 x + sec^4 y \pm \sqrt{(4 x^4 + 4 y^4 + sec^4 x + sec^4 y)^2 - 4 \dots}}{2} $$
+$$ \lambda_{max} \ge \frac{4 x^4 + 4 y^4 + sec^4 x + sec^4 y}{2}
+	\ge \frac{sec^4 x + sec^4 y}{2} \ge \frac{2}{2} \ge 1 \implies \sqrt{\lambda_{max}} \ge 1 $$
+	
+Таким образом, норма матрицы не меньше 1 на всей области определения $\Phi(\mathbf{x})$, а значит условия для локальной сходимости не выполняются.
+
+\begin{problem}
+	content...
+\end{problem}
+
+\end{document}
