@@ -1,0 +1,304 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+%\usepackage{pscyr}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{expdlist}
+\usepackage[dvips]{graphicx}
+\usepackage{amsmath}
+\usepackage[makeroom]{cancel}
+\usepackage{svg}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{indentfirst}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\begin{document}
+	
+\newtheorem{problem}{Задача}
+
+\begin{center}
+	{Вяцков Михаил, КН-401}
+	
+	{\huge \bf Контрольная работа. Вариант №3 }
+\end{center}
+
+\begin{problem}
+Сделать один шаг метода Ньютона для системы
+
+$$ \left\{\begin{matrix}
+	-\sin x + \sin y + 0.01 & = & 0 \\
+	\tg x + \tg y + 0.01 & = & 0 \\
+\end{matrix}\right. $$
+	
+При условии, что $\mathbf{x_0} = (0, 0)^T$	
+\end{problem}
+
+Перепишем функцию в векторной форме и найдем производную
+
+$$ f(\mathbf{x}) = (0.01 - \sin x + \sin y, 0.01 + \tg x + \tg y) $$
+$$ f'(\mathbf{x}) = \left(\begin{matrix}
+	- \cos x & \cos y \\
+	\sec^2 x & \sec^2 y \\
+\end{matrix}\right) $$
+$$ \mathbf{x}_1 = \mathbf{x}_0 - f'(\mathbf{x}_0)^{-1} f(\mathbf{x}_0) $$
+$$ \mathbf{x}_1 - \mathbf{x}_0 = \varDelta_0 \mathbf{x} = - f'(\mathbf{x}_0)^{-1} f(\mathbf{x}_0) $$
+$$ f'(\mathbf{x}_0) \varDelta_0 \mathbf{x} = - f(\mathbf{x}_0) $$
+$$ \varDelta_0 \mathbf{x} = \mathbf{x}_1 - \mathbf{x}_0 = \mathbf{x}_1 $$
+$$ f'(\mathbf{x}_0) \mathbf{x}_1 = - f(\mathbf{x}_0) $$
+$$ \left(\begin{matrix}
+	 -1 & 1 \\
+	 1 & 1 \\
+\end{matrix}\right) \mathbf{x}_1 =
+\left(\begin{matrix}
+	- 0.01 \\
+	- 0.01 \\
+\end{matrix}\right) $$
+$$ \left(\begin{matrix}
+	-1 & 1 \\
+	0 & 2 \\
+\end{matrix}\right) \mathbf{x}_1 =
+\left(\begin{matrix}
+	- 0.01 \\
+	- 0.02 \\
+\end{matrix}\right) $$
+$$ \mathbf{x}_1 = (0, -0.01) $$
+
+\begin{problem}
+	Получить эффективную оценку снизу числа обусловленности для матрицы
+	
+	$$A = \left(\begin{matrix}
+		1 & n & 0 & 0 & \dots & 0 & 0 \\
+		0 & 1 & n - 1 & 0 & \dots & 0 & 0 \\
+		0 & 0 & 1 & n - 2 & \dots & 0 & 0 \\
+		\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+		0 & 0 & 0 & 0 & \dots & 1 & 2 \\
+		0 & 0 & 0 & 0 & \dots & 0 & 1 \\
+	\end{matrix}\right)$$
+\end{problem}
+
+Найдем сначала, как выглядит обратная матрица $A^{-1} = B = (b_{ij})$ из соотношений
+
+$$ BA = AB = E $$
+
+Рассмотрев левый столбец тождества $BA = E$, найдем, что первый столбец $B$ содержит все нули, кроме единицы в самом верхнем элементе.
+
+$$ e_{11} = \sum_{k = 1}^{n} b_{1k} a_{k1} = b_{11} = 1 $$
+$$ e_{i1} = \sum_{k = 1}^{n} b_{ik} a_{k1} = b_{i1} = 0, i > 1 $$
+
+Теперь возьмем $2 \le i, j \le n$ и заметим, что должно выполняться ровно следующее:
+
+$$ e_{ij} = \sum_{k = 1}^{n} b_{ik} a_{kj} = \sum_{k = 1}^{n} a_{ik} b_{kj} $$
+
+При этом из рассуждений выше следует, что $b_{i1} = 0$, а по построению $a_{i1} = 0$ ($i > 1$).
+
+$$ e_{ij} = \sum_{k = 2}^{n} b_{ik} a_{kj} = \sum_{k = 2}^{n} a_{ik} b_{kj} $$
+
+Таким образом на элементы, начиная со второго столбца и второй строки, влияют только элементы из такой же области в перемножаемых матрицах, а значит построение части $B$ будет эквивалентно построению обратной матрице к $A$ без первого столбца и строки.
+
+Построим теперь первую строку $B$
+
+$$ n a_{11} + a_{12} = 0 \implies a_{12} = -n $$
+$$ (n - 1) a_{12} + a_{13} = 0 \implies a_{13} = n (n - 1) $$
+$$ \dots $$
+$$ 2 a_{1 n-1} + a_{1n} = 0 \implies a_{1n} = (-1)^{n - 1} n! $$!
+
+Как мы видим, при любой размерности, верхняя строка состоит из постепенно строящегося факториала с переменным знаком. Применив знание того, что подматрица обратной матрицы есть обратная матрица к подматрице исходной матрицы, получам вид $B$
+
+$$A = \left(\begin{matrix}
+	1 & -n & n (n - 1) & -n (n - 1) (n - 2) & \dots & (-1)^{n - 2} \frac{n!}{2} & (-1)^{n - 1} n! \\
+	0 & 1 & -(n - 1) & (n - 1) (n - 2) & \dots & (-1)^{n - 3} \frac{(n - 1)!}{2} & (-1)^{n - 2} (n - 1)! \\
+	0 & 0 & 1 & -(n - 2) & \dots & (-1)^{n - 4} \frac{(n - 2)!}{2} & (-1)^{n - 3} (n - 2)! \\
+	\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+	0 & 0 & 0 & 0 & \dots & 1 & -2 \\
+	0 & 0 & 0 & 0 & \dots & 0 & 1 \\
+\end{matrix}\right)$$
+
+Теперь рассмотрим разные случаи матричных норм
+
+\begin{itemize}
+	\item $L_1$~--- норма матрицы есть максимальная абсолютная сумма столбца
+	
+	$$ \left \| X \right \| _1 = \max \limits _{1 \leq j \leq n} \sum _{i=1} ^m | x_{ij} | $$
+	$$ \left \| A \right \| = n + 1 $$
+	$$ \left \| B \right \| = \sum_{k = 1}^{n} k! $$
+	$$ \kappa(A) = (n + 1) \sum_{k = 1}^{n} k! $$
+	
+	\item $L_{\infty}$~--- норма матрицы есть максимальная абсолютная сумма строки
+	
+	$$ \left \| A \right \| _\infty = \max \limits _{1 \leq i \leq m} \sum _{j=1} ^n | a_{ij} | $$
+	$$ \left \| A \right \| = n + 1 $$
+	$$ \left \| B \right \| = \sum_{k = 1}^{n} \frac{n!}{k!} $$
+	$$ \kappa(A) = (n + 1) \sum_{k = 1}^{n} \frac{n!}{k!} = (n + 1)! \sum_{k = 1}^{n} \frac{1}{k!} $$
+	
+	\item $L_2$~--- спектральная норма
+	
+	В данном случае все не так просто, сразу найти число обусловленности не представляется возможным. Однако вспомним определение матричной нормы в общем виде
+	
+	$$ \|X\| = \sup\{\|Xv\| : v\in R^n \mbox{ with }\|v\|= 1\} $$
+	
+	Кажется естественным, что чем большие значения встречаются в столбце, тем больший вклад он будет вносить в итоговую сумму, поэтому достаточно близкими к ответу должны быть такие оценки на нормы матриц и на число обусловленности (максимальный по норме столбец из $A$ и максимальный по норме столбец из $B$)
+	
+	$$ \|A\| \ge \|A \times (0, 1, 0, \dots, 0)^{\tau} \| = \sqrt{n^2 + 1} $$
+	$$ \|B\| \ge \|B \times (0, 0, \dots, 0, 1)^{\tau} \|
+		= \left( \sum_{k = 1}^{n} (k!)^2 \right)^{\frac{1}{2}} $$
+	$$ \kappa(A) \ge \sqrt{n^2 + 1} \left( \sum_{k = 1}^{n} (k!)^2 \right)^{\frac{1}{2}} $$
+		
+\end{itemize}
+
+\begin{problem}
+Проверить достаточные условия локальной сходимости метода простой итерации для системы
+	
+$$
+\left\{\begin{matrix}
+	x & = & x^2 + y^2 \\
+	y & = & \tg x + \tg y \\
+\end{matrix} \right.
+$$
+\end{problem}
+
+Выразим это в векторной форме
+
+$$ \mathbf{x} = \Phi(\mathbf{x}) = (x^2 + y^2, \tg x + \tg y) $$
+$$ \Phi'(\mathbf{x}) = \left(\begin{matrix}
+	2x & 2y \\
+	\sec^2 x & \sec^2 y \\
+\end{matrix}\right) $$
+
+Найдем норму производной $\Phi(\mathbf{x})$.
+
+$$ \norm{\Phi'(\mathbf{x})} = \sqrt{\lambda_{max}(\Phi'(\mathbf{x}) \Phi'(\mathbf{x})^T)} $$
+
+Где $\lambda_{max}$~--- наибольшее собственное число.
+
+$$ \Phi'(\mathbf{x}) \Phi'(\mathbf{x})^T) = \left( \begin{matrix}
+	4 x^4 + 4 y^4 & 2x \sec^2 x + 2y \sec^2 y \\
+	2x \sec^2 x + 2y \sec^2 y & sec^4 x + sec^4 y \\
+\end{matrix} \right) $$
+$$ \chi(\lambda) = \left| \begin{matrix}
+	4 x^4 + 4 y^4 - \lambda & 2x \sec^2 x + 2y \sec^2 y \\
+	2x \sec^2 x + 2y \sec^2 y & sec^4 x + sec^4 y - \lambda \\
+\end{matrix} \right| = 0 $$
+$$ (4 x^4 + 4 y^4 - \lambda) (sec^4 x + sec^4 y - \lambda) - (2x \sec^2 x + 2y \sec^2 y) (2x \sec^2 x + 2y \sec^2 y) = 0 $$
+$$ \lambda^2 - (4 x^4 + 4 y^4 + sec^4 x + sec^4 y) \lambda + (4 x^4 + 4 y^4) (sec^4 x + sec^4 y) - (2x \sec^2 x + 2y \sec^2 y) (2x \sec^2 x + 2y \sec^2 y) = 0 $$
+$$ \lambda = \frac{4 x^4 + 4 y^4 + sec^4 x + sec^4 y \pm \sqrt{(4 x^4 + 4 y^4 + sec^4 x + sec^4 y)^2 - 4 \dots}}{2} $$
+$$ \lambda_{max} \ge \frac{4 x^4 + 4 y^4 + sec^4 x + sec^4 y}{2}
+	\ge \frac{sec^4 x + sec^4 y}{2} \ge \frac{2}{2} \ge 1 \implies \sqrt{\lambda_{max}} \ge 1 $$
+	
+Таким образом, норма матрицы не меньше 1 на всей области определения $\Phi(\mathbf{x})$, а значит условия для локальной сходимости не выполняются.
+
+\begin{problem}
+	По точкам $x_0 = -1, x_1 = 0, x_2 = 1$ для функции $y = e^x$ построить интерполяционный полином Эрмита, если узлы $x_0, x_2$~--- однократные, а $x_1$~--- трехкратный. Оценить погрешность приближения для $-1 \le x \le 1$.
+\end{problem}
+
+Пусть у нас на самом деле есть 5 корней $x_0 \dots x_4$, причем $x_0 = -1, x_1 = x_2 = x_3 = 0, x_4 = 1$. Вспомним, что для вычисления разделенных разностей можно применить следующие рассуждения. Пусть мы хотим вычислить разделенную разность
+
+$$ f(x_i, x_{i + 1}, \dots, x_{i + k}) $$
+
+Если все аргументы равны, то справедливо следующее равенство
+
+$$ x_i = x_{i + 1} = \dots = x_{i + k} = \xi $$
+$$ f(x_i, x_{i + 1}, \dots, x_{i + k}) = f(\xi, \xi, \dots, \xi) = \frac{f^{(k)}(\xi)}{k!} $$
+
+Если аргументы различны, причем первый и последний различны, то, в свою очередь, справедлива обычная рекурсивная формула
+
+$$ x_i \ne x_{i + k} $$
+$$ f(x_i, x_{i + 1}, \dots, x_{i + k})
+	= \frac{f(x_{i + 1}, x_{i + 2}, \dots, x_{i + k})
+		- f(x_i, x_{i + 1}, \dots, x_{i + k - 1})}{x_{i + k} - x_i} $$
+
+Теперь мы можем вычислить все необходимые разделенные разности
+
+$$ \begin{tabular}{ r | c | c | c | c | c }
+	
+		& $f(x_i)$
+		& $f(x_i, x_{i + 1})$
+		& $f(x_i, x_{i + 1}, x_{i + 2})$
+		& $f(x_i, \dots, x_{i + 3})$
+		& $f(x_i, \dots, x_{i + 4})$ \\ \hline
+	$x_0$
+		& $e^{-1}$
+		& $1 - e^{-1}$
+		& $e^{-1}$
+		& $0.5 - e^{-1}$
+		& $0.5 (e + e^{-1} - 3)$ \\ \hline
+	$x_1$
+		& $1$
+		& $1$
+		& $0.5$
+		& $e - 2.5$
+		& \\ \hline
+	$x_2$
+		& $1$
+		& $1$
+		& $e - 2$
+		&
+		& \\ \hline
+	$x_3$
+		& $1$
+		& $e - 1$
+		& 
+		& 
+		& \\ \hline
+	$x_4$
+		& $e$
+		& 
+		& 
+		& 
+		& \\
+\end{tabular} $$
+
+Приведем ниже вычисления
+
+$$ f(x_0, x_1) = \frac{f(x_1) - f(x_0)}{x_1 - x_0} = \frac{e^{0} - e^{-1}}{0 - (-1)} = 1 - e^{-1} $$
+$$ f(x_1, x_2) = f(x_2, x_3) = f(0, 0) = \frac{f'(0)}{1!} = e^0 = 1 $$
+$$ f(x_3, x_4) = \frac{f(x_4) - f(x_3)}{x_4 - x_3} = \frac{e - 1}{1 - 0} = e - 1 $$
+$$ f(x_0, x_1, x_2)
+	= \frac{f(x_1, x_2) - f(x_0, x_1)}{x_2 - x_0} = \frac{1 - (1 - e^{-1})}{0 - (-1)} = e^{-1} $$
+$$ f(x_1, x_2, x_3) = f(0, 0, 0) = \frac{f''(0)}{2!} = \frac{e^{0}}{2} = \frac{1}{2} = 0.5 $$
+$$ f(x_2, x_3, x_4) = \frac{f(x_3, x_4) - f(x_2, x_3)}{x_4 - x_2} = \frac{e - 1 - 1}{1 - 0} = e - 2 $$
+$$ f(x_0, x_1, x_2, x_3) = \frac{f(x_1, x_2, x_3) - f(x_0, x_1, x_2)}{x_3 - x_0}
+	= \frac{0.5 - e^{-1}}{0 - (-1)} = 0.5 - e^{-1} $$
+$$ f(x_1, x_2, x_3, x_4) = \frac{f(x_2, x_3, x_4) - f(x_1, x_2, x_3)}{x_4 - x_1}
+	= \frac{e - 2 - 0.5}{1 - 0} = e - 2.5 $$
+$$ f(x_0, x_1, x_2, x_3, x_4) = \frac{f(x_1, x_2, x_3, x_4) - f(x_0, x_1, x_2, x_3)}{x_4 - x_0}
+	= \frac{e - 2.5 - 0.5 + e^{-1}}{1 - (-1)} = 0.5 \left(e + e^{-1} - 3 \right)$$
+	
+Таким образом мы можем восстановить полином
+
+$$ H_4 = f(x_0) + f(x_0, x_1) (x - x_0) + f(x_0, x_1, x_2) (x - x_0) (x - x_1) + f(x_0, x_1, x_2, x_3) (x - x_0) (x - x_1) (x - x_2) + $$
+$$ + f(x_0, x_1, x_2, x_3, x_4) (x - x_0) (x - x_1) (x - x_2) (x - x_3) $$
+$$ H_4 = e^{-1} + (1 - e^{-1}) (x + 1) + e^{-1} x (x + 1) + (0.5 - e^{-1}) x^2 (x + 1) + 0.5 \left(e + e^{-1} - 3 \right) x^3 (x + 1) $$
+$$ H_4 = 1 + x + \frac{1}{2} x^2 - \frac{1}{2} \left( e - e^{-1} - 2 \right) x^3 - \frac{1}{2} \left( e + e^{-1} - 3 \right) x^4 $$
+
+Погрешность можно записать следующим образом
+
+$$ \delta = \left| f(x, x_0, \dots, x_4) \prod_{i = 0}^{4} (x - x_i) \right| $$
+
+Как известно, также можно сказать следующее
+
+$$ f(x, x_0, \dots, x_4) = \frac{f^{(5)}(\xi)}{5!},
+	\xi \in [\min(x, x_0, \dots, x_4), \max(x, x_0, \dots, x_4)] $$
+	
+Таким образом
+
+$$ \delta = \left| \frac{f^{(5)}(\xi)}{5!} x^3 (x^2 - 1) \right| $$
+
+Заметим, что
+
+$$ [\min(x, x_0, \dots, x_4), \max(x, x_0, \dots, x_4)] = [-1, -1] $$
+
+Значит
+
+$$ |x| \le 1 \implies |x^3| \le 1 $$
+$$ |x| \le 1 \implies 0 \le x^2 \le 1 \implies -1 \le x^2 - 1 \le 0 \implies |x^2 - 1| \le 1 $$
+$$ f^{(5)}(\xi) = e^{\xi} \le e $$
+
+Таким образом
+
+$$ \delta = \left| \frac{f^{(5)}(\xi)}{5!} x^3 (x^2 - 1) \right|
+	= \left| \frac{f^{(5)}(\xi)}{5!} \right| \left| x^3 \right| \left| x^2 - 1 \right| 
+	\le \frac{e}{120} \cdot 1 \cdot 1 = \frac{e}{120} \le 0.023 $$
+
+\end{document}
