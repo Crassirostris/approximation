@@ -8,10 +8,10 @@
 const double SEGMENT_LEFT_END = 0.3;
 const double SEGMENT_RIGHT_END = 1.1;
 const double INITIAL_STEP = 0.1;
-const double ACTUAL_INT_VALUE = -0.447545;
-const int ITERATIONS_COUNT = 5;
+const double ACTUAL_INT_VALUE = -0.447545002279;
+const int ITERATIONS_COUNT = 10;
 
-const double EPS = 1e-9;
+const double EPS = 1e-14;
 
 double fun(double x) {
     return log(atan(x));
@@ -66,7 +66,7 @@ double euler(double step) {
 
 double center_rect(double step) {
     double sum = 0;
-    for (double point = SEGMENT_LEFT_END; point < SEGMENT_RIGHT_END + EPS; point += step) {
+    for (double point = SEGMENT_LEFT_END; point < SEGMENT_RIGHT_END - EPS; point += step) {
         sum += fun(point + step / 2);
     }
     return sum * step;
@@ -74,7 +74,7 @@ double center_rect(double step) {
 
 double gauss_comp(double step) {
     double sum = 0;
-    for (double point = SEGMENT_LEFT_END; point < SEGMENT_RIGHT_END + EPS; point += step) {
+    for (double point = SEGMENT_LEFT_END; point < SEGMENT_RIGHT_END - EPS; point += step) {
         double center = point + step / 2;
         double d = step / 2 * sqrt(0.6);
         sum += fun(center - d) * 5 / 9 + fun(center) * 8 / 9 + fun(center + d) * 5 / 9;
@@ -84,7 +84,10 @@ double gauss_comp(double step) {
 
 int main() {
     analyze_method("C Rectangles", center_rect, 2, ITERATIONS_COUNT, INITIAL_STEP, ACTUAL_INT_VALUE);
+    std::cout << "--------------------------------------------------------------------------------" << std::endl;
     analyze_method("Euler", euler, 4, ITERATIONS_COUNT, INITIAL_STEP, ACTUAL_INT_VALUE);
-    analyze_method("Gauss", gauss, 2, 2, INITIAL_STEP, ACTUAL_INT_VALUE);
+    std::cout << "--------------------------------------------------------------------------------" << std::endl;
+    analyze_method("Gauss", gauss, 2, 1, INITIAL_STEP, ACTUAL_INT_VALUE);
+    std::cout << "--------------------------------------------------------------------------------" << std::endl;
     analyze_method("Gauss Comp", gauss_comp, 2, ITERATIONS_COUNT, INITIAL_STEP, ACTUAL_INT_VALUE);
 }
